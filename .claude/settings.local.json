@@ -22,7 +22,10 @@
       "Bash(grep -E \"\\\\.\\(s|hex|mem|bin\\)$\")",
       "Bash(ls -1 /c/Users/38560/Desktop/work/riscv-cpu-competition/validate/tests/isa/generated/*.bin)",
       "Bash(grep -c '' C:/Users/38560/Desktop/work/riscv-cpu-competition/validate/tests/riscv-compliance/riscv-test-suite/rv32i/references/*.reference_output)",
-      "Bash(sort -t: -k2 -n)"
+      "Bash(sort -t: -k2 -n)",
+      "Bash(rm -f cpu_top.v stage_if.v stage_id.v stage_ex.v stage_mem.v stage_wb.v pipe_ifid.v pipe_idex.v pipe_exmem.v pipe_memwb.v control_unit.v imm_gen.v csr_unit.v hazard_unit.v forwarding_unit.v instruction_memory.v data_memory.v riscv_soc.v)",
+      "Bash(ls *.v)",
+      "Bash(ls *.sv)"
     ]
   }
 }

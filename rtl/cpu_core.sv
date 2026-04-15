@@ -59,6 +59,8 @@ module cpu_core (
     wire        ex_csr_wen;
     wire [11:0] ex_csr_waddr;
     wire [31:0] ex_csr_wdata;
+    wire        div_stall;           // multi-cycle divide stall
+    wire        mul_stall;           // pipelined multiply stall (1 cycle)
 
     // EX/MEM register outputs
     wire [31:0] exmem_pc_plus4, exmem_alu_result, exmem_rs2_data;
@@ -66,6 +68,7 @@ module cpu_core (
     wire [2:0]  exmem_mem_funct3;
     wire        exmem_mem_read, exmem_mem_write, exmem_reg_write;
     wire [1:0]  exmem_wb_sel;
+    wire [31:0] exmem_fwd_data;      // pre-computed forwarding value
 
     // MEM output
     wire [31:0] mem_read_data;
@@ -75,12 +78,13 @@ module cpu_core (
     wire [4:0]  memwb_rd_addr;
     wire        memwb_reg_write;
     wire [1:0]  memwb_wb_sel;
+    wire [31:0] memwb_write_data;    // pre-computed WB mux (from pipe_memwb)
 
-    // WB output
-    wire [31:0] wb_write_data;
+    // WB output — direct from pre-computed register (no combinational mux)
+    wire [31:0] wb_write_data = memwb_write_data;
 
     // Hazard / forwarding
-    wire        stall;
+    wire        hz_stall;            // load-use hazard stall
     wire [1:0]  forward_a, forward_b;
 
     // CSR outputs to EX
@@ -88,8 +92,14 @@ module cpu_core (
     wire [31:0] id_csr_rdata_raw;
 
     // -------------------------------------------------------------------
-    // Flush: any taken branch or trap redirects the PC
+    // Pipeline control
     // -------------------------------------------------------------------
+    // Combined EX-stage stall (divide or pipelined multiply)
+    wire ex_stall = div_stall | mul_stall;
+    // Combined stall: load-use hazard OR EX multi-cycle operation
+    wire pipeline_stall = hz_stall | ex_stall;
+
+    // Flush: any taken branch or trap redirects the PC
     wire flush = ex_branch_taken;
 
     // -------------------------------------------------------------------
@@ -98,7 +108,7 @@ module cpu_core (
     stage_if u_if (
         .clk           (cpu_clk),
         .cpu_rst       (cpu_rst),
-        .stall         (stall),
+        .stall         (pipeline_stall),
         .branch_taken  (ex_branch_taken),
         .branch_target (ex_branch_target),
         .irom_word_addr(irom_addr),
@@ -114,7 +124,7 @@ module cpu_core (
     pipe_ifid u_pipe_ifid (
         .clk             (cpu_clk),
         .cpu_rst         (cpu_rst),
-        .stall           (stall),
+        .stall           (pipeline_stall),
         .flush           (flush),
         .if_pc           (if_pc),
         .if_pc_plus4     (if_pc_plus4),
@@ -196,16 +206,19 @@ module cpu_core (
         .idex_rd_addr   (idex_rd_addr),
         .ifid_rs1_addr  (ifid_instruction[19:15]),
         .ifid_rs2_addr  (ifid_instruction[24:20]),
-        .stall          (stall)
+        .stall          (hz_stall)
     );
 
     // -------------------------------------------------------------------
     // ID/EX register
+    // flush: load-use stall inserts NOP bubble, branch flush inserts NOP.
+    // hold:  multi-cycle EX op keeps the instruction in EX (div or mul).
     // -------------------------------------------------------------------
     pipe_idex u_pipe_idex (
         .clk            (cpu_clk),
         .cpu_rst        (cpu_rst),
-        .flush          (stall | flush),   // stall inserts NOP bubble in EX
+        .flush          (hz_stall | flush),   // stall inserts NOP bubble in EX
+        .hold           (ex_stall),           // keep div/mul instruction in EX
         .id_pc          (ifid_pc),
         .id_pc_plus4    (ifid_pc_plus4),
         .id_rs1_data    (id_rs1_data),
@@ -276,6 +289,8 @@ module cpu_core (
     // Stage 3: EX
     // -------------------------------------------------------------------
     stage_ex u_ex (
+        .clk              (cpu_clk),
+        .cpu_rst          (cpu_rst),
         .idex_pc          (idex_pc),
         .idex_pc_plus4    (idex_pc_plus4),
         .idex_rs1_data    (idex_rs1_data),
@@ -299,9 +314,7 @@ module cpu_core (
         .csr_mepc         (csr_mepc),
         .forward_a        (forward_a),
         .forward_b        (forward_b),
-        .exmem_alu_result (exmem_alu_result),
-        .exmem_wb_sel     (exmem_wb_sel),
-        .exmem_pc_plus4   (exmem_pc_plus4),
+        .exmem_fwd_data   (exmem_fwd_data),
         .wb_write_data    (wb_write_data),
         .alu_result       (ex_alu_result),
         .rs2_data_fwd     (ex_rs2_data_fwd),
@@ -312,15 +325,20 @@ module cpu_core (
         .trap_mcause      (ex_trap_mcause),
         .csr_wen          (ex_csr_wen),
         .csr_waddr        (ex_csr_waddr),
-        .csr_wdata        (ex_csr_wdata)
+        .csr_wdata        (ex_csr_wdata),
+        .div_stall        (div_stall),
+        .mul_stall        (mul_stall)
     );
 
     // -------------------------------------------------------------------
     // EX/MEM register
+    // flush: insert NOP bubble while EX multi-cycle op is active (prevent
+    //        false stores/loads/writes from incomplete results).
     // -------------------------------------------------------------------
     pipe_exmem u_pipe_exmem (
         .clk              (cpu_clk),
         .cpu_rst          (cpu_rst),
+        .flush            (ex_stall),
         .ex_pc_plus4      (idex_pc_plus4),
         .ex_alu_result    (ex_alu_result),
         .ex_rs2_data      (ex_rs2_data_fwd),
@@ -338,7 +356,8 @@ module cpu_core (
         .exmem_mem_write  (exmem_mem_write),
         .exmem_mem_funct3 (exmem_mem_funct3),
         .exmem_reg_write  (exmem_reg_write),
-        .exmem_wb_sel     (exmem_wb_sel)
+        .exmem_wb_sel     (exmem_wb_sel),
+        .exmem_fwd_data   (exmem_fwd_data)
     );
 
     // -------------------------------------------------------------------
@@ -375,18 +394,14 @@ module cpu_core (
         .memwb_mem_data  (memwb_mem_data),
         .memwb_rd_addr   (memwb_rd_addr),
         .memwb_reg_write (memwb_reg_write),
-        .memwb_wb_sel    (memwb_wb_sel)
+        .memwb_wb_sel    (memwb_wb_sel),
+        .memwb_write_data(memwb_write_data)
     );
 
     // -------------------------------------------------------------------
-    // Stage 5: WB
+    // Stage 5: WB — pre-computed in pipe_memwb as memwb_write_data.
+    // The old stage_wb 3:1 mux is absorbed into the MEM/WB register,
+    // so wb_write_data is now a direct register output (see wire decl above).
     // -------------------------------------------------------------------
-    stage_wb u_wb (
-        .memwb_alu_result(memwb_alu_result),
-        .memwb_mem_data  (memwb_mem_data),
-        .memwb_pc_plus4  (memwb_pc_plus4),
-        .memwb_wb_sel    (memwb_wb_sel),
-        .wb_write_data   (wb_write_data)
-    );
 
 endmodule

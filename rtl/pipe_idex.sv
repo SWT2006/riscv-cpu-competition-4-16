@@ -1,11 +1,14 @@
 `timescale 1ns/1ps
 // ID/EX pipeline register.
 // flush: insert NOP bubble (branch taken OR load-use stall).
+// hold:  keep current values (multi-cycle EX operation, e.g. divide).
+// Priority: reset > flush > hold > normal latch.
 // All control bits — including ecall — are explicitly zeroed on flush.
 module pipe_idex (
     input  wire        clk,
     input  wire        cpu_rst,
     input  wire        flush,   // stall | branch_taken
+    input  wire        hold,    // div_stall — keep current contents
     // Inputs from ID
     input  wire [31:0] id_pc,
     input  wire [31:0] id_pc_plus4,
@@ -86,7 +89,7 @@ module pipe_idex (
             idex_csr_op     <= 1'b0;
             idex_csr_rdata  <= 32'b0;
             idex_csr_addr   <= 12'b0;
-        end else begin
+        end else if (!hold) begin
             idex_pc         <= id_pc;
             idex_pc_plus4   <= id_pc_plus4;
             idex_rs1_data   <= id_rs1_data;
@@ -113,5 +116,6 @@ module pipe_idex (
             idex_csr_rdata  <= id_csr_rdata;
             idex_csr_addr   <= id_csr_addr;
         end
+        // hold && !cpu_rst && !flush: retain current values (div stall)
     end
 endmodule

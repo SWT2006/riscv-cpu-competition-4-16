@@ -1,0 +1,129 @@
+[SEG] cycle=1101 PC=0x80000144 val=0x37000000
+[CNT] cycle=1128 PC=0x80000364 val=0x80000000 (START)
+[CNT] cycle=1141 PC=0x80000364 val=0x80000000 (START)
+[CNT] cycle=1154 PC=0x80000364 val=0x80000000 (START)
+[CNT] cycle=1167 PC=0x80000364 val=0x80000000 (START)
+[CNT] cycle=1180 PC=0x80000364 val=0x80000000 (START)
+[CNT] cycle=1193 PC=0x80000364 val=0x80000000 (START)
+[CNT] cycle=1206 PC=0x80000364 val=0x80000000 (START)
+[CNT] cycle=1219 PC=0x80000364 val=0x80000000 (START)
+[CNT] cycle=1232 PC=0x80000364 val=0x80000000 (START)
+[CNT] cycle=1245 PC=0x80000364 val=0x80000000 (START)
+[CMP1] cycle=160286714  compare() #1
+[CMP1] cycle=160286723  compare() #2
+[PROGRESS] 200M cycles, PC=0x80001FBC, cmp1=2 cmp2=0 prime_calls=0
+[CMP1] cycle=321347020  compare() #3
+[CMP1] cycle=321347029  compare() #4
+[PROGRESS] 400M cycles, PC=0x80001FB0, cmp1=4 cmp2=0 prime_calls=0
+[CMP1] cycle=483449486  compare() #5
+[CMP1] cycle=483449495  compare() #6
+[PROGRESS] 600M cycles, PC=0x80001FB8, cmp1=6 cmp2=0 prime_calls=0
+[CMP1] cycle=645103686  compare() #7
+[CMP1] cycle=645103695  compare() #8
+[PROGRESS] 800M cycles, PC=0x80001FD0, cmp1=8 cmp2=0 prime_calls=0
+[CMP1] cycle=807764002  compare() #9
+[CMP1] cycle=807764011  compare() #10
+[CMP1] cycle=969734576  compare() #11
+[CMP1] cycle=969734585  compare() #12
+[PROGRESS] 1000M cycles, PC=0x800004DC, cmp1=12 cmp2=0 prime_calls=0
+[CMP1] cycle=1132278790  compare() #13
+[CMP1] cycle=1132278799  compare() #14
+[PROGRESS] 1200M cycles, PC=0x8000044C, cmp1=14 cmp2=0 prime_calls=0
+[CMP1] cycle=1294986336  compare() #15
+[CMP1] cycle=1294986345  compare() #16
+[PROGRESS] 1400M cycles, PC=0x80000734, cmp1=16 cmp2=0 prime_calls=0
+[CMP1] cycle=1458292610  compare() #17
+[CMP1] cycle=1458292619  compare() #18
+[PROGRESS] 1600M cycles, PC=0x800006F8, cmp1=18 cmp2=0 prime_calls=0
+[CMP1] cycle=1621468270  compare() #19
+[CMP1] cycle=1621468279  compare() #20
+[L2SORT] cycle=1621850467  loop2 sort_init #1
+[ISPRIME] cycle=1621956490  is_prime() call #1
+[CMP2] cycle=1653005500  compare2() #1
+[CMP2] cycle=1653005510  compare2() #2
+[L2SORT] cycle=1653033531  loop2 sort_init #2
+[L2SORT] cycle=1653033553  loop2 sort_init #3
+[ISPRIME] cycle=1653139576  is_prime() call #2
+[CMP2] cycle=1684188586  compare2() #3
+[CMP2] cycle=1684188596  compare2() #4
+[L2SORT] cycle=1684216617  loop2 sort_init #4
+[L2SORT] cycle=1684216639  loop2 sort_init #5
+[ISPRIME] cycle=1684322662  is_prime() call #3
+[CMP2] cycle=1715371672  compare2() #5
+[CMP2] cycle=1715371682  compare2() #6
+[L2SORT] cycle=1715399703  loop2 sort_init #6
+[L2SORT] cycle=1715399725  loop2 sort_init #7
+[ISPRIME] cycle=1715505748  is_prime() call #4
+[CMP2] cycle=1746554758  compare2() #7
+[CMP2] cycle=1746554768  compare2() #8
+[L2SORT] cycle=1746582789  loop2 sort_init #8
+[L2SORT] cycle=1746582811  loop2 sort_init #9
+[ISPRIME] cycle=1746688834  is_prime() call #5
+[CMP2] cycle=1777737844  compare2() #9
+[CMP2] cycle=1777737854  compare2() #10
+[L2SORT] cycle=1777765875  loop2 sort_init #10
+[L2SORT] cycle=1777765897  loop2 sort_init #11
+[PROGRESS] 1800M cycles, PC=0x80000B4C, cmp1=20 cmp2=10 prime_calls=6
+[CMP2] cycle=1808920930  compare2() #11
+[CMP2] cycle=1808920940  compare2() #12
+[L2SORT] cycle=1808948961  loop2 sort_init #12
+[L2SORT] cycle=1808948983  loop2 sort_init #13
+[CMP2] cycle=1840104016  compare2() #13
+[CMP2] cycle=1840104026  compare2() #14
+[L2SORT] cycle=1840132047  loop2 sort_init #14
+[L2SORT] cycle=1840132069  loop2 sort_init #15
+[CMP2] cycle=1871287102  compare2() #15
+[CMP2] cycle=1871287112  compare2() #16
+[L2SORT] cycle=1871315133  loop2 sort_init #16
+[L2SORT] cycle=1871315155  loop2 sort_init #17
+[CMP2] cycle=1902470188  compare2() #17
+[CMP2] cycle=1902470198  compare2() #18
+[L2SORT] cycle=1902498219  loop2 sort_init #18
+[L2SORT] cycle=1902498241  loop2 sort_init #19
+[CMP2] cycle=1933653274  compare2() #19
+[CMP2] cycle=1933653284  compare2() #20
+[L2SORT] cycle=1933681305  loop2 sort_init #20
+[PRIMES] cycle=1933681321  count_primes() ENTERED
+[ISPRIME] cycle=1936237866  is_prime() call #2000
+[ISPRIME] cycle=1940563140  is_prime() call #4000
+[ISPRIME] cycle=1945967700  is_prime() call #6000
+[ISPRIME] cycle=1952138143  is_prime() call #8000
+[ISPRIME] cycle=1959101150  is_prime() call #10000
+[ISPRIME] cycle=1966635725  is_prime() call #12000
+[ISPRIME] cycle=1974734103  is_prime() call #14000
+[ISPRIME] cycle=1983415908  is_prime() call #16000
+[ISPRIME] cycle=1992540939  is_prime() call #18000
+[PROGRESS] 2000M cycles, PC=0x80000D84, cmp1=20 cmp2=20 prime_calls=19580
+[ISPRIME] cycle=2001966089  is_prime() call #20000
+[FAIL!] cycle=2003648761  FAIL handler entered!
+[PASS!] cycle=2003648770  PASS handler entered!
+[CNT] cycle=2003648796 PC=0x800003BC val=0xFFFFFFFF (STOP)
+[CNT] cycle=2003648809 PC=0x800003BC val=0xFFFFFFFF (STOP)
+[CNT] cycle=2003648822 PC=0x800003BC val=0xFFFFFFFF (STOP)
+[CNT] cycle=2003648835 PC=0x800003BC val=0xFFFFFFFF (STOP)
+[CNT] cycle=2003648848 PC=0x800003BC val=0xFFFFFFFF (STOP)
+[CNT] cycle=2003648861 PC=0x800003BC val=0xFFFFFFFF (STOP)
+[CNT] cycle=2003648874 PC=0x800003BC val=0xFFFFFFFF (STOP)
+[CNT] cycle=2003648887 PC=0x800003BC val=0xFFFFFFFF (STOP)
+[CNT] cycle=2003648900 PC=0x800003BC val=0xFFFFFFFF (STOP)
+[CNT] cycle=2003648913 PC=0x800003BC val=0xFFFFFFFF (STOP)
+[SEG] cycle=2003648996 PC=0x800001A8 val=0x00000000
+[LED] cycle=2003649054 PC=0x800001E0 val=0x01221C08
+
+=== TEST COMPLETE at cycle 2003649104 ===
+  Self-loop at PC=0x80000014
+  Register dump:
+    x1 = 0x80000010 ()
+    x2 = 0x8013D244 ()
+    x5 = 0x80000D78 ()
+    x6 = 0x80100008 ()
+    x7 = 0x00000008 ()
+    x8 = 0x80001214 ()
+    x12 = 0x00000001 ()
+    x14 = 0x01221C08 ()
+    x28 = 0x80001EA0 ()
+    x29 = 0x99999999 ()
+    x30 = 0x33333332 ()
+    x31 = 0x00000001 (t6)
+  RESULT: *** STUCK at unexpected PC ***
+  Stats: cmp1=20 cmp2=20 is_prime=20009
